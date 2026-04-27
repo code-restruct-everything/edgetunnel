@@ -74,12 +74,34 @@ Demo: [https://EDT-Pages.github.io/admin](https://EDT-Pages.github.io/admin)
 1. 先启用上游代理（SOCKS5/HTTP/HTTPS）。
 2. 再设置 `GO2DIRECT` 域名列表（逗号分隔，支持 `*` 通配符）。
 3. 命中 `GO2DIRECT` 直连，未命中走上游。
+4. `GO2DIRECT` 只匹配目标主机名，请勿填写 `http://`、`https://`、路径或端口。
+5. 推荐写法：`主域 + 子域 + 该站常见 CDN 域名`。
 
-示例：
+基础示例：
 
 ```env
 GO2DIRECT=youtube.com,*.youtube.com,netflix.com,*.netflix.com,tiktok.com,*.tiktok.com
 ```
+
+常见视频网站增强模板（可直接作为 `GO2DIRECT` 值）：
+
+```env
+GO2DIRECT=youtube.com,*.youtube.com,youtu.be,*.youtu.be,googlevideo.com,*.googlevideo.com,ytimg.com,*.ytimg.com,youtube-nocookie.com,*.youtube-nocookie.com,
+netflix.com,*.netflix.com,nflxvideo.net,*.nflxvideo.net,nflximg.net,*.nflximg.net,nflximg.com,*.nflximg.com,nflxext.com,*.nflxext.com,nflxso.net,*.nflxso.net,nflxsearch.net,*.nflxsearch.net,
+disneyplus.com,*.disneyplus.com,disney-plus.net,*.disney-plus.net,bamgrid.com,*.bamgrid.com,
+primevideo.com,*.primevideo.com,amazonvideo.com,*.amazonvideo.com,aiv-cdn.net,*.aiv-cdn.net,pv-cdn.net,*.pv-cdn.net,
+hulu.com,*.hulu.com,max.com,*.max.com,hbomax.com,*.hbomax.com,tv.apple.com,*.tv.apple.com,paramountplus.com,*.paramountplus.com,peacocktv.com,*.peacocktv.com,
+crunchyroll.com,*.crunchyroll.com,vrv.co,*.vrv.co,twitch.tv,*.twitch.tv,ttvnw.net,*.ttvnw.net,jtvnw.net,*.jtvnw.net,twitchcdn.net,*.twitchcdn.net,
+tiktok.com,*.tiktok.com,tiktokcdn.com,*.tiktokcdn.com,tiktokv.com,*.tiktokv.com,byteoversea.com,*.byteoversea.com,ibytedtos.com,*.ibytedtos.com,
+vimeo.com,*.vimeo.com,vimeocdn.com,*.vimeocdn.com,dailymotion.com,*.dailymotion.com,dailymotion-video.net,*.dailymotion-video.net,rumble.com,*.rumble.com,
+bilibili.com,*.bilibili.com,bilivideo.com,*.bilivideo.com
+```
+
+如果你还想继续提高命中率，建议用下面流程补齐：
+
+1. 临时开启 `DEBUG=1`。
+2. 播放目标视频网站内容，看 Worker 日志里实际访问到的域名。
+3. 把漏掉的域名按 `主域 + *.主域` 追加到 `GO2DIRECT`，重新部署即可。
 
 ---
 
