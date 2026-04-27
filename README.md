@@ -1,4 +1,4 @@
-# 🚀 edgetunnel 2.1
+﻿# 🚀 edgetunnel 2.1
 ![后台页面](./img.png)
 
 [![Stars](https://img.shields.io/github/stars/cmliu/edgetunnel?style=flat-square&logo=github)](https://github.com/cmliu/edgetunnel/stargazers)
@@ -13,222 +13,435 @@
 
 ## 📖 项目简介
 
-**edgetunnel** 是一个基于 CF Workers/Pages 平台的边缘计算隧道解密方案。它能够高效地处理网络流量，并提供强大的管理面板和灵活的节点配置能力。
+**edgetunnel** 是一个基于 Cloudflare Workers/Pages 的边缘代理方案，提供：
 
-- 🖥️ **Demo 演示站点**：[https://EDT-Pages.github.io/admin](https://EDT-Pages.github.io/admin)
+- 多协议支持：VLESS、Trojan、Shadowsocks
+- 可视化后台：配置管理、日志与状态查看
+- 订阅生成与转换：适配 Clash、Sing-box、Surge 等客户端
+- 代理增强：支持 `PROXYIP`、SOCKS5/HTTP/HTTPS 上游
+- 跨平台：Windows / Android / iOS / macOS / 路由器固件
 
-### ✨ 核心特性
-
-- 🛡️ **协议支持**：支持 VLESS、Trojan、Shadowsocks 等主流协议，深度集成加密传输。
-- 📊 **管理面板**：内置可视化后台，支持实时配置修改、日志查看及流量统计。
-- 🛠️ **部署灵活**：完整适配 CF Workers 及 CF Pages (GitHub / 上传)。
-- 🔄 **订阅系统**：内置自动订阅生成及混淆转换，适配主流客户端（Clash, Sing-box, Surge 等）。
-- ⚡ **性能加速**：支持自定义 ProxyIP、SOCKS5/HTTP 链式代理及优选 API，优化网络延迟。
-- 🌐 **多台适配**：完美适配 Windows, Android, iOS, MacOS 及各种软路由固件。
+Demo: [https://EDT-Pages.github.io/admin](https://EDT-Pages.github.io/admin)
 
 ---
 
 ## 💡 快速部署
->[!TIP]
-> 📖 **详尽图文教程**：[edgetunnel 部署指南](https://cmliussss.com/p/edt2/)
 
->[!WARNING]
-> ⚠️ **Error 1101问题**：[视频解析](https://www.youtube.com/watch?v=r4uVTEJptdE)
+详细图文教程：<https://cmliussss.com/p/edt2/>
 
-### ⚙️ Workers 部署
+### 1) Workers 部署（文字版）
 
-<details>
-<summary><code><strong>「 Workers 部署文字教程 」</strong></code></summary>
+1. 在 Cloudflare Workers 新建 Worker。
+2. 将仓库里的 [_worker.js](./_worker.js) 内容粘贴到 Worker 编辑器并部署。
+3. 在 Variables 中添加环境变量 `ADMIN`（后台登录密码）。
+4. 在 Bindings 中绑定 KV 命名空间，变量名写 `KV`。
+5. 可选绑定自定义域名，访问 `https://你的域名/admin` 登录后台。
 
-1. 部署 CF Worker：
-   - 在 CF Worker 控制台中创建一个新的 Worker。
-   - 将 [worker.js](https://github.com/cmliu/edgetunnel/blob/main/_worker.js) 的内容粘贴到 Worker 编辑器中。
-   - 在左侧的 `设置`选项卡中，选择 `变量` > `添加变量`。
-     变量名称填写**ADMIN**，值则为你的管理员密码，后点击 `保存`即可。
+### 2) Pages 上传部署（推荐）
 
-2. 绑定 KV 命名空间：
-   - 在 `绑定`选项卡中选择 `添加绑定 +` > `KV 命名空间` > `添加绑定`，然后选择一个已有的命名空间或创建一个新的命名空间进行绑定。
-   - `变量名称`填写**KV**，然后点击 `添加绑定`即可。
+1. 下载项目 zip（或直接上传当前目录文件）到 Pages 项目。
+2. 在 Pages Variables 中添加 `ADMIN`。
+3. 在 Pages Bindings 中绑定 KV 命名空间，变量名 `KV`。
+4. 重新部署后访问 `https://你的域名/admin`。
 
-3. 给 Workers绑定 自定义域： 
-   - 在 workers控制台的 `触发器`选项卡，下方点击 `添加自定义域`。
-   - 填入你已转入 CF 域名解析服务的次级域名，例如:`vless.google.com`后 点击`添加自定义域`，等待证书生效即可。
+### 3) Pages + GitHub 部署
 
-4. 访问后台：
-   - 访问 `https://vless.google.com/admin` 输入管理员密码即可登录后台。
-
-</details>
-
-### 🛠 Pages 上传 部署方法 **最佳推荐!!!** [图文教程](https://cmliussss.com/p/edt2/)
-
-<details>
-<summary><code><strong>「 Pages 上传文件部署文字教程 」</strong></code></summary>
-
-1. 部署 CF Pages：
-   - 下载 [main.zip](https://github.com/cmliu/edgetunnel/archive/refs/heads/main.zip) 文件，并点上 Star !!!
-   - 在 CF Pages 控制台中选择 `上传资产`后，为你的项目取名后点击 `创建项目`，然后上传你下载好的 [main.zip](https://github.com/cmliu/edgetunnel/archive/refs/heads/main.zip) 文件后点击 `部署站点`。
-   - 部署完成后点击 `继续处理站点` 后，选择 `设置` > `环境变量` > **制作**为生产环境定义变量 > `添加变量`。
-     变量名称填写**ADMIN**，值则为你的管理员密码，后点击 `保存`即可。
-   - 返回 `部署` 选项卡，在右下角点击 `创建新部署` 后，重新上传 [main.zip](https://github.com/cmliu/edgetunnel/archive/refs/heads/main.zip) 文件后点击 `保存并部署` 即可。
-
-2. 绑定 KV 命名空间：
-   - 在 `设置`选项卡中选择 `绑定` > `+ 添加` > `KV 命名空间`，然后选择一个已有的命名空间或创建一个新的命名空间进行绑定。
-   - `变量名称`填写**KV**，然后点击 `保存`后重试部署即可。
-
-3. 给 Pages绑定 CNAME自定义域：[视频教程](https://www.youtube.com/watch?v=LeT4jQUh8ok&t=851s)
-   - 在 Pages控制台的 `自定义域`选项卡，下方点击 `设置自定义域`。
-   - 填入你的自定义次级域名，注意不要使用你的根域名，例如：
-     您分配到的域名是 `fuck.cloudns.biz`，则添加自定义域填入 `lizi.fuck.cloudns.biz`即可；
-   - 按照 CF 的要求将返回你的域名DNS服务商，添加 该自定义域 `lizi`的 CNAME记录 `edgetunnel.pages.dev` 后，点击 `激活域`即可。
-   
-4. 访问后台：
-   - 访问 `https://lizi.fuck.cloudns.biz/admin` 输入管理员密码即可登录后台。
-
-</details>
-
-### 🛠 Pages + GitHub 部署方法
-
-<details>
-<summary><code><strong>「 Pages + GitHub 部署文字教程 」</strong></code></summary>
-
-1. 部署 CF Pages：
-   - 在 Github 上先 Fork 本项目，并点上 Star !!!
-   - 在 CF Pages 控制台中选择 `连接到 Git`后，选中 `edgetunnel`项目后点击 `开始设置`。
-   - 在 `设置构建和部署`页面下方，选择 `环境变量（高级）`后并 `添加变量`
-     变量名称填写**ADMIN**，值则为你的管理员密码，后点击 `保存并部署`即可。
-
-2. 绑定 KV 命名空间：
-   - 在 `设置`选项卡中选择 `绑定` > `+ 添加` > `KV 命名空间`，然后选择一个已有的命名空间或创建一个新的命名空间进行绑定。
-   - `变量名称`填写**KV**，然后点击 `保存`后重试部署即可。
-
-3. 给 Pages绑定 CNAME自定义域：[视频教程](https://www.youtube.com/watch?v=LeT4jQUh8ok&t=851s)
-   - 在 Pages控制台的 `自定义域`选项卡，下方点击 `设置自定义域`。
-   - 填入你的自定义次级域名，注意不要使用你的根域名，例如：
-     您分配到的域名是 `fuck.cloudns.biz`，则添加自定义域填入 `lizi.fuck.cloudns.biz`即可；
-   - 按照 CF 的要求将返回你的域名DNS服务商，添加 该自定义域 `lizi`的 CNAME记录 `edgetunnel.pages.dev` 后，点击 `激活域`即可。
-
-4. 访问后台：
-   - 访问 `https://lizi.fuck.cloudns.biz/admin` 输入管理员密码即可登录后台。
-
-</details>
+1. Fork 项目并连接到 Cloudflare Pages。
+2. 在构建设置中添加 `ADMIN`。
+3. 在 Bindings 中绑定 `KV`。
+4. 完成部署后访问 `https://你的域名/admin`。
 
 ---
 
 ## 🔑 环境变量说明
 
-| 变量名 | 必填 | 示例 | 详细备注 |
+| 变量 | 必填 | 示例 | 说明 |
 | :--- | :---: | :--- | :--- |
-| **ADMIN** | ✅ | `123456` | 后台管理面板登录密码 |
-| **KEY** | ❌ | `CMLiussss` | 快速订阅路径密钥，访问 `/CMLiussss` 即可快速获取节点 |
-| **UUID** | ❌ | `90cd4a77-141a-43c9-991b-08263cfe9c10` | 强制固定UUID，只支持**UUIDv4**标准格式 |
-| **PROXYIP** | ❌ | `proxyip.cmliussss.net:443` | 全局自定义反代 IP  |
-| **URL** | ❌ | `https://cloudflare-error-page-3th.pages.dev` | 默认主页伪装地址（可填写网页 URL 或 `1101`） |
-| **GO2DIRECT** | ❌ | `youtube.com,*.youtube.com` | 直连名单（命中规则直连，其余走 SOCKS；域名用逗号或换行分隔，支持 `*` 通配符） |
-| **DEBUG** | ❌ | `1`或`true` | **开发者模式**，默认关闭调试日志功能（console.log），设置`1`或`true`则开启调试日志功能 |
-| **OFF_LOG** | ❌ | `1`或`true` | 默认开启日志记录功能，设置`1`或`true`则关闭日志记录功能 |
-| **BEST_SUB** | ❌ | `1`或`true` | 默认关闭作为**优选订阅生成器**的功能，设置`1`或`true`则开启该功能 |
+| `ADMIN` | ✅ | `123456` | 后台登录密码 |
+| `KEY` | ❌ | `CMLiussss` | 快速订阅路径密钥 |
+| `UUID` | ❌ | `90cd4a77-141a-43c9-991b-08263cfe9c10` | 固定 UUID（需 UUIDv4） |
+| `PROXYIP` | ❌ | `proxyip.cmliussss.net:443` | 全局反代 IP |
+| `URL` | ❌ | `https://cloudflare-error-page-3th.pages.dev` | 主页伪装地址 |
+| `GO2DIRECT` | ❌ | `youtube.com,*.youtube.com` | 命中直连，其余走上游代理 |
+| `DEBUG` | ❌ | `1` 或 `true` | 开启调试日志 |
+| `OFF_LOG` | ❌ | `1` 或 `true` | 关闭日志记录 |
+| `BEST_SUB` | ❌ | `1` 或 `true` | 开启优选订阅生成模式 |
 
 ---
 
-### 📌 GO2DIRECT 分流使用说明（命中直连，其余走 SOCKS）
+## 📌 GO2DIRECT 分流
 
-1. 先启用 SOCKS5/HTTP/HTTPS 上游（否则就是全直连）：
-   - 可通过路径或查询参数启用，例如：`/?socks5=user:password@127.0.0.1:1080`
-   - 也可用全局形式：`/socks5://user:password@127.0.0.1:1080`
+1. 先启用上游代理（SOCKS5/HTTP/HTTPS）。
+2. 再设置 `GO2DIRECT` 域名列表（逗号分隔，支持 `*` 通配符）。
+3. 命中 `GO2DIRECT` 直连，未命中走上游。
 
-2. 在 Worker/Pages 环境变量中添加 `GO2DIRECT`（推荐直接复制下面完整一行）：
+示例：
 
 ```env
-GO2DIRECT=youtube.com,*.youtube.com,youtu.be,*.youtu.be,youtube-nocookie.com,*.youtube-nocookie.com,googlevideo.com,*.googlevideo.com,ytimg.com,*.ytimg.com,youtubei.googleapis.com,netflix.com,*.netflix.com,nflxvideo.net,*.nflxvideo.net,nflximg.net,*.nflximg.net,nflxext.com,*.nflxext.com,nflxso.net,*.nflxso.net,nflxsearch.net,*.nflxsearch.net,tiktok.com,*.tiktok.com,tiktokv.com,*.tiktokv.com,tiktokcdn.com,*.tiktokcdn.com,tiktokcdn-us.com,*.tiktokcdn-us.com,byteoversea.com,*.byteoversea.com,ibytedtos.com,*.ibytedtos.com,muscdn.com,*.muscdn.com,disneyplus.com,*.disneyplus.com,bamgrid.com,*.bamgrid.com,primevideo.com,*.primevideo.com,aiv-cdn.net,*.aiv-cdn.net,max.com,*.max.com,hbomax.com,*.hbomax.com,hulu.com,*.hulu.com,peacocktv.com,*.peacocktv.com,paramountplus.com,*.paramountplus.com,crunchyroll.com,*.crunchyroll.com,twitch.tv,*.twitch.tv,ttvnw.net,*.ttvnw.net,jtvnw.net,*.jtvnw.net,vimeo.com,*.vimeo.com,vimeocdn.com,*.vimeocdn.com,dailymotion.com,*.dailymotion.com,dmcdn.net,*.dmcdn.net
+GO2DIRECT=youtube.com,*.youtube.com,netflix.com,*.netflix.com,tiktok.com,*.tiktok.com
 ```
 
-3. 分流规则生效逻辑：
-   - 命中 `GO2DIRECT`：直连
-   - 未命中 `GO2DIRECT`：走已配置的 SOCKS5/HTTP/HTTPS 代理
+---
 
-> 建议：每个平台同时写主域名和 `*.` 子域名（例如 `youtube.com` + `*.youtube.com`），命中率更高。
+## 🧪 代理参数路径示例
+
+### 指定 `PROXYIP`
+
+```url
+/proxyip=proxyip.cmliussss.net
+/?proxyip=proxyip.cmliussss.net
+```
+
+### 指定 `SOCKS5`
+
+```url
+/socks5=user:password@127.0.0.1:1080
+/?socks5=user:password@127.0.0.1:1080
+/socks5://user:password@127.0.0.1:1080
+```
+
+### 指定 `HTTP/HTTPS`
+
+```url
+/http=user:password@127.0.0.1:8080
+/https=user:password@127.0.0.1:8443
+/http://user:password@127.0.0.1:8080
+/https://user:password@127.0.0.1:8443
+```
 
 ---
 
-## 🔧 高级实用技巧
-如需修改 **订阅地址里的TOKEN** 和 **用于节点验证的UUID** ，可通过修改变量
-1. 修改`ADMIN`或`KEY`变量的值，可以随机修改 **订阅地址里的TOKEN** 和 **用于节点验证的UUID**
-2. 设置`UUID`变量可以强制固定 **订阅地址里的TOKEN** 和 **用于节点验证的UUID**，注意必须是**UUIDv4**标准格式，否则会导致节点无法使用。
+## 🧭 可复现代理部署（落地 + 中转，匿名示例）
 
-本工具支持通过 **PATH路径** 动态切换底层代理方案：
+本文按可复现顺序整理：`落地 SOCKS` -> `中转链式 SOCKS` -> `systemd 常驻` -> `验证` -> `故障排查`。  
+所有示例均使用占位符，不包含个人隐私信息。
 
-- 指定 `PROXYIP` 案例
-   ```url
-   /proxyip=proxyip.cmliussss.net
-   /?proxyip=proxyip.cmliussss.net
-   ```
+### 1) 部署拓扑与目标
 
-- 指定 `SOCKS5` 案例
-   ```url
-   /socks5=user:password@127.0.0.1:1080
-   /?socks5=user:password@127.0.0.1:1080
-   /socks://dXNlcjpwYXNzd29yZA==@127.0.0.1:1080 (默认激活全局SOCKS5)
-   /socks5://user:password@127.0.0.1:1080 (默认激活全局SOCKS5)
-   ```
+```text
+Cloudflare Worker -> 中转机 SOCKS(1080, gost) -> 落地机 SOCKS(1080, danted) -> 目标站点
+```
 
-- 指定 `HTTP代理` 案例
-   ```url
-   /http=user:password@127.0.0.1:1080
-   /http://user:password@127.0.0.1:8080 (默认激活全局SOCKS5)
-   ```
+必要软件（建议先执行）：
+
+```bash
+sudo apt update
+sudo apt install -y curl wget tar ca-certificates ufw
+```
+
+目标效果：
+
+- 落地机看到的来源 IP 是中转机 IP（不是 Cloudflare 出口 IP）。
+- 目标站点看到的出口 IP 是落地机 IP。
+
+占位符：
+
+- `RELAY_PUBLIC_IP`：中转机公网 IP
+- `LANDING_PUBLIC_IP`：落地机公网 IP
+- `RELAY_USER` / `RELAY_PASS`：中转机 SOCKS 认证
+
+### 2) 落地机（Ubuntu/Debian）创建 SOCKS5（Dante）
+
+```bash
+sudo apt update
+sudo apt install -y dante-server
+```
+
+#### 方案 A：无密码 + IP 白名单（仅允许中转机进入）
+
+```bash
+IFACE=$(ip route get 1.1.1.1 | awk '{print $5; exit}')
+RELAY_IP_A="RELAY_PUBLIC_IP"
+RELAY_IP_B="RELAY_PUBLIC_IP_2"   # 没有第二个可删除对应规则
+
+sudo tee /etc/danted.conf >/dev/null <<EOF
+logoutput: /var/log/danted.log
+internal: 0.0.0.0 port = 1080
+external: ${IFACE}
+
+clientmethod: none
+socksmethod: none
+
+user.privileged: root
+user.notprivileged: nobody
+
+client pass {
+  from: ${RELAY_IP_A}/32 to: 0.0.0.0/0
+}
+client pass {
+  from: ${RELAY_IP_B}/32 to: 0.0.0.0/0
+}
+client block {
+  from: 0.0.0.0/0 to: 0.0.0.0/0
+}
+
+socks pass {
+  from: ${RELAY_IP_A}/32 to: 0.0.0.0/0
+}
+socks pass {
+  from: ${RELAY_IP_B}/32 to: 0.0.0.0/0
+}
+socks block {
+  from: 0.0.0.0/0 to: 0.0.0.0/0
+}
+EOF
+```
+
+#### 方案 B：用户名密码认证 + IP 白名单（推荐）
+
+先创建专用代理用户（禁止 shell 登录）：
+
+```bash
+sudo useradd -M -s /usr/sbin/nologin relay_worker
+sudo passwd relay_worker
+```
+
+再写 Dante 配置：
+
+```bash
+IFACE=$(ip route get 1.1.1.1 | awk '{print $5; exit}')
+RELAY_IP_A="RELAY_PUBLIC_IP"
+RELAY_IP_B="RELAY_PUBLIC_IP_2"   # 没有第二个可删除对应规则
+
+sudo tee /etc/danted.conf >/dev/null <<EOF
+logoutput: /var/log/danted.log
+internal: 0.0.0.0 port = 1080
+external: ${IFACE}
+
+clientmethod: none
+socksmethod: username
+
+user.privileged: root
+user.notprivileged: nobody
+
+client pass {
+  from: ${RELAY_IP_A}/32 to: 0.0.0.0/0
+}
+client pass {
+  from: ${RELAY_IP_B}/32 to: 0.0.0.0/0
+}
+client block {
+  from: 0.0.0.0/0 to: 0.0.0.0/0
+}
+
+socks pass {
+  from: ${RELAY_IP_A}/32 to: 0.0.0.0/0
+}
+socks pass {
+  from: ${RELAY_IP_B}/32 to: 0.0.0.0/0
+}
+socks block {
+  from: 0.0.0.0/0 to: 0.0.0.0/0
+}
+EOF
+```
+
+说明：密码错误或用户名错误时，SOCKS5 认证会失败，无法建立代理连接。
+
+#### 方案 C：任意来源 IP 可访问（公网开放）
+
+仅建议配合用户名密码认证使用；不建议“无密码 + 任意来源”。
+
+```bash
+IFACE=$(ip route get 1.1.1.1 | awk '{print $5; exit}')
+
+sudo tee /etc/danted.conf >/dev/null <<EOF
+logoutput: /var/log/danted.log
+internal: 0.0.0.0 port = 1080
+external: ${IFACE}
+
+clientmethod: none
+socksmethod: username
+
+user.privileged: root
+user.notprivileged: nobody
+
+client pass {
+  from: 0.0.0.0/0 to: 0.0.0.0/0
+}
+client block {
+  from: 0.0.0.0/0 to: 0.0.0.0/0
+}
+
+socks pass {
+  from: 0.0.0.0/0 to: 0.0.0.0/0
+}
+socks block {
+  from: 0.0.0.0/0 to: 0.0.0.0/0
+}
+EOF
+```
+
+```bash
+sudo systemctl restart danted || sudo systemctl restart sockd
+sudo systemctl enable danted || sudo systemctl enable sockd
+sudo systemctl status danted --no-pager || sudo systemctl status sockd --no-pager
+```
+
+方案 A/B（白名单）防火墙示例：
+
+```bash
+sudo ufw allow from RELAY_PUBLIC_IP to any port 1080 proto tcp
+sudo ufw allow from RELAY_PUBLIC_IP_2 to any port 1080 proto tcp
+sudo ufw deny 1080/tcp
+```
+
+方案 C（任意来源）防火墙示例：
+
+```bash
+sudo ufw allow 1080/tcp
+```
+
+### 3) 中转机创建链式 SOCKS（gost）
+
+`apt install gost` 可能是同名不兼容程序（仅支持 `-v`，不支持 `-L/-F`），建议使用官方 `ginuerzh/gost` v2。
+
+```bash
+sudo apt remove -y gost
+sudo apt purge -y gost
+sudo apt autoremove -y
+```
+
+```bash
+cd /tmp
+wget -O gost.tar.gz https://github.com/ginuerzh/gost/releases/download/v2.12.0/gost_2.12.0_linux_amd64.tar.gz
+tar -xzf gost.tar.gz
+chmod +x gost
+sudo mv gost /usr/local/bin/gost
+/usr/local/bin/gost -V
+```
+
+```bash
+/usr/local/bin/gost -L socks5://RELAY_USER:RELAY_PASS@0.0.0.0:1080 -F socks5://LANDING_PUBLIC_IP:1080
+```
+
+### 4) systemd 常驻服务（中转机）
+
+```bash
+sudo tee /etc/systemd/system/gost-relay.service >/dev/null <<'EOF'
+[Unit]
+Description=GOST SOCKS relay to landing SOCKS
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/gost -L socks5://RELAY_USER:RELAY_PASS@0.0.0.0:1080 -F socks5://LANDING_PUBLIC_IP:1080
+Restart=always
+RestartSec=3
+LimitNOFILE=1048576
+
+[Install]
+WantedBy=multi-user.target
+EOF
+```
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable --now gost-relay
+sudo systemctl restart gost-relay
+sudo systemctl status gost-relay --no-pager
+```
+
+可选：同机再开一个非链式代理（2080，仅中转机直出）：
+
+```bash
+sudo tee /etc/systemd/system/gost-socks-2080.service >/dev/null <<'EOF'
+[Unit]
+Description=GOST standalone SOCKS5 on 2080
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/gost -L socks5://RELAY_USER2:RELAY_PASS2@0.0.0.0:2080
+Restart=always
+RestartSec=3
+LimitNOFILE=1048576
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+sudo systemctl daemon-reload
+sudo systemctl enable --now gost-socks-2080
+```
+
+### 5) Worker 侧填写示例
+
+- 非全局：`socks5=RELAY_USER:RELAY_PASS@RELAY_PUBLIC_IP:1080`
+- 全局：`socks5://RELAY_USER:RELAY_PASS@RELAY_PUBLIC_IP:1080`
+
+行为说明：
+
+- 非全局（`socks5=`）：命中直连名单时直连，未命中走上游代理（不同版本细节可能略有差异，请以当前 `_worker.js` 逻辑为准）。
+- 全局（`socks5://` 或显式全局参数）：所有流量都走上游代理。
+
+### 6) 验证命令
+
+说明：方案 A/B 请优先在“被落地机白名单允许的中转机”上测试。若在其他来源 IP 机器上测试被拒绝，属于预期行为。方案 C 可在任意来源测试。
+
+```bash
+curl -v --socks5-hostname RELAY_USER:RELAY_PASS@127.0.0.1:1080 https://ifconfig.me
+```
+
+```bash
+curl -v --socks5-hostname RELAY_USER2:RELAY_PASS2@127.0.0.1:2080 https://ifconfig.me
+```
+
+```bash
+journalctl -u gost-relay -n 80 --no-pager
+sudo tail -n 80 /var/log/danted.log
+```
+
+### 7) 已踩坑与修复（实战总结）
+
+1. `flag provided but not defined: -L`  
+   原因：安装了不兼容同名 `gost`。  
+   修复：卸载 apt 版并安装官方 v2，使用 `/usr/local/bin/gost`。
+
+2. `gost-relay.service` 启动失败 `status=2/INVALIDARGUMENT`  
+   原因：`-L socks5://user:pass@:1080` 中 `@` 后主机为空。  
+   修复：改为 `@0.0.0.0:1080`。
+
+3. 密码含 `@` 等保留字符导致解析失败  
+   修复：URL 编码（例如 `@` -> `%40`）。
+
+4. `curl: (97) Can't complete SOCKS5 connection to ifconfig.me`  
+   原因：SOCKS 服务端到目标失败（规则/防火墙/网卡）。  
+   修复：重点检查 `client pass`、`socks pass`、`external` 网卡、云安全组与 UFW。
+
+5. `needrestart` 提示重启系统服务  
+   结论：系统更新常见提示，不代表 Dante/gost 配置失败。
+
+6. `client pass` 与 `socks pass` 来源 IP 配置不一致  
+   现象：连接建立但代理请求被拒绝。  
+   修复：允许的中转 IP 必须同时出现在 `client pass` 和 `socks pass` 两组规则中。
+
+7. Windows/Linux 打开 README 出现乱码  
+   原因：终端或编辑器未按 UTF-8 显示，或文件被错误编码保存。  
+   修复：
+   - VS Code：右下角编码切换为 `UTF-8`，并将默认编码设置为 `utf8`。
+   - Windows PowerShell 显示乱码时先执行：`chcp 65001`，再执行 `$OutputEncoding = [Console]::OutputEncoding = [Text.Encoding]::UTF8`。
+   - 若文件已被错误编码保存，优先从 Git 恢复正确版本后再以 UTF-8 保存。
+   - 本仓库建议保留 `.editorconfig` 的 `charset = utf-8` 与 `.gitattributes` 的换行规则，避免跨平台再次出现编码/换行混乱。
 
 ---
 
-## 💻 客户端适配情况
+## 🧩 客户端适配
 
-| 平台 | 推荐客户端 | 备注 |
-| :--- | :--- | :--- |
-| **Windows** | [v2rayN](https://github.com/2dust/v2rayN), [FlClash](https://github.com/chen08209/FlClash), [mihomo-party](https://github.com/mihomo-party-org/mihomo-party), [Clash Verge Rev](https://github.com/ClashVerge/ClashVerge-Rev) | 全面支持 |
-| **Android** | [ClashMetaForAndroid](https://github.com/MetaCubeX/ClashMetaForAndroid), [FlClash](https://github.com/chen08209/FlClash), [v2rayNG](https://github.com/2dust/v2rayNG) | 建议使用 Meta 核心 |
-| **iOS** | [Surge](https://surgeapp.com/), [Shadowrocket](https://shadowrocket.com/), [Stash](https://stashapp.com/) | 完美适配 |
-| **MacOS** | [FlClash](https://github.com/chen08209/FlClash), [mihomo-party](https://github.com/mihomo-party-org/mihomo-party), [Clash Verge Rev](https://github.com/ClashVerge/ClashVerge-Rev), [Surge](https://surgeapp.com/) | M1/M2 完美兼容 |
-
----
-
-## ⭐ 项目热度
-
-[![Stargazers over time](https://starchart.cc/cmliu/edgetunnel.svg?variant=adaptive)](https://starchart.cc/cmliu/edgetunnel)
-
----
-
-## 🙏 特别鸣谢
-### 💖 赞助支持 - 提供云服务器维持[订阅转换服务](https://sub.cmliussss.net/)
-- [NodeLoc](https://www.nodeloc.com/)
-- [Alice](https://url.cmliussss.com/alice)
-- [EasyLinks](https://www.vmrack.net?ref_code=5Zk7eNhbgL7)
-- [ZMTO(VTEXS)](https://zmto.com/?affid=1532)
-
-### 🛠 开源代码引用
-- [zizifn/edgetunnel](https://github.com/zizifn/edgetunnel)
-- [3Kmfi6HP/EDtunnel](https://github.com/6Kmfi6HP/EDtunnel)
-- [SHIJS1999/cloudflare-worker-vless-ip](https://github.com/SHIJS1999/cloudflare-worker-vless-ip)
-- [Stanley-baby](https://github.com/Stanley-baby)
-- [ACL4SSR](https://github.com/ACL4SSR/ACL4SSR/tree/master/Clash/config)
-- [股神](https://t.me/CF_NAT/38889)
-- [Workers/Pages Metrics](https://t.me/zhetengsha/3382)
-- [白嫖哥](https://t.me/bestcfipas)
-- [Mingyu](https://github.com/ymyuuu/workers-vless)
-- [Alexandre Kojève](https://t.me/Enkelte_notif/784)
-- [eooce](https://github.com/eooce/Cloudflare-proxy)
-- [Sukka](https://ip.skk.moe/)
-- [zhangtaile](https://github.com/cmliu/edgetunnel/pull/999)
-- [1345695](https://github.com/1345695/edcloudwasm)
+| 平台 | 推荐客户端 |
+| :--- | :--- |
+| Windows | v2rayN / FlClash / Clash Verge Rev / mihomo-party |
+| Android | ClashMetaForAndroid / FlClash / v2rayNG |
+| iOS | Surge / Shadowrocket / Stash |
+| macOS | FlClash / Clash Verge Rev / Surge / mihomo-party |
 
 ---
 
 ## ⚠️ 免责声明
 
-1. 本项目（"edgetunnel"）仅供**教育、科学研究及个人安全测试**之目的。
-2. 使用者在下载或使用本项目代码时，必须严格遵守所在地区的法律法规。
-3. 作者 **cmliu** 对任何滥用本项目代码导致的行为或后果均不承担任何责任。
-4. 本项目不对因使用代码引起的任何直接或间接损害负责。
-5. 建议在测试完成后 24 小时内删除本项目相关部署。
-
----
-
-**如果您觉得项目对您有帮助，请给一个 Star 🌟，这是对我最大的鼓励！**
+1. 本项目仅用于教育、研究和合法的安全测试用途。  
+2. 使用者需遵守所在地区法律法规。  
+3. 项目作者及贡献者不对任何滥用行为及其后果负责。  
+4. 建议在测试完成后及时清理不再使用的部署资源。  
